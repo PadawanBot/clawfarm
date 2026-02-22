@@ -1,0 +1,148 @@
+id: feature-dev
+name: Feature Development Workflow
+
+steps:
+  - id: plan
+    agent: planner
+    model: blockrun/eco
+    timeout: 300
+    input: |
+      You are planning a software feature. Decompose it into clear user stories.
+
+      Task: {{task}}
+      Repo: {{repo}}
+
+      Write 3-7 user stories. Each story must have:
+      - Title
+      - What the user can do
+      - Acceptance criteria (bullet points)
+      - Files to create/modify
+
+      Keep stories small and independently implementable.
+
+      End your response with exactly:
+      STATUS: done
+    expects: "STATUS: done"
+
+  - id: setup
+    agent: setup
+    model: blockrun/eco
+    timeout: 300
+    input: |
+      You are setting up a project structure based on a plan.
+
+      Repo: {{repo}}
+      Plan:
+      {{plan}}
+
+      Create the required directories and base files.
+      Use: mkdir -p, touch, and basic file scaffolding.
+      Do not implement logic yet — just structure.
+
+      Run commands in the repo directory.
+      End with exactly:
+      STATUS: done
+    expects: "STATUS: done"
+
+  - id: implement
+    agent: developer
+    model: blockrun/sonnet
+    timeout: 900
+    input: |
+      You are implementing a software feature.
+
+      Repo: {{repo}}
+      Plan:
+      {{plan}}
+
+      Implement every story from the plan. Write clean, working code.
+      - One story at a time
+      - Write the actual code files
+      - Handle edge cases
+      - Add inline comments for complex logic
+
+      End with exactly:
+      STATUS: done
+    expects: "STATUS: done"
+
+  - id: verify
+    agent: verifier
+    model: blockrun/eco
+    timeout: 300
+    input: |
+      You are verifying a software implementation against acceptance criteria.
+
+      Repo: {{repo}}
+      Plan:
+      {{plan}}
+
+      Implementation summary:
+      {{implement}}
+
+      Check each story's acceptance criteria. Read the actual files.
+      List what passes and what fails.
+
+      End with either:
+      STATUS: done (all criteria met)
+      STATUS: failed (list what failed)
+    expects: "STATUS:"
+
+  - id: test
+    agent: tester
+    model: blockrun/eco
+    timeout: 600
+    input: |
+      You are writing and running tests for a software implementation.
+
+      Repo: {{repo}}
+      Implementation:
+      {{implement}}
+
+      Write tests for the key functions. Run them.
+      Fix any failures you find.
+
+      End with exactly:
+      STATUS: done
+    expects: "STATUS: done"
+
+  - id: pr
+    agent: developer
+    model: blockrun/eco
+    timeout: 120
+    input: |
+      Create a GitHub Pull Request for the completed feature.
+
+      Repo: {{repo}}
+      Task: {{task}}
+      Run ID: {{run_id}}
+
+      Steps:
+      1. git add -A
+      2. git commit -m "feat: {{task_short}}"
+      3. git push origin HEAD
+      4. gh pr create --title "feat: {{task_short}}" --body "ClawFarm run {{run_id}}"
+
+      End with the PR URL and:
+      STATUS: done
+    expects: "STATUS: done"
+
+  - id: review
+    agent: reviewer
+    model: blockrun/sonnet
+    timeout: 300
+    input: |
+      You are doing a code review.
+
+      Repo: {{repo}}
+      Task: {{task}}
+
+      Review the implementation for:
+      - Correctness (does it do what was asked?)
+      - Security issues
+      - Code quality and readability
+      - Missing error handling
+
+      End with either:
+      APPROVED
+      REQUEST_CHANGES: (list changes needed)
+    expects: "APPROVED|REQUEST_CHANGES"

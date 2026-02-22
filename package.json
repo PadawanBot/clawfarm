@@ -1,0 +1,22 @@
+{
+  "name": "clawfarm",
+  "version": "0.1.0",
+  "description": "Lightweight sequential multi-agent workflow orchestrator for OpenClaw",
+  "type": "module",
+  "main": "clawfarm.js",
+  "bin": {
+    "clawfarm": "./clawfarm.js"
+  },
+  "scripts": {
+    "start": "node clawfarm.js"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0",
+    "js-yaml": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT"
+}
