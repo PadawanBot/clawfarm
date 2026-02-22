@@ -59,4 +59,13 @@ program
     await stopRun(runId);
   });
 
+program
+  .command('setup-agents')
+  .description('Register all ClawFarm agents with OpenClaw')
+  .option('-w, --workflow-dir <path>', 'Path to clawfarm directory', import.meta.dirname)
+  .action(async (opts) => {
+    const { setupAgents } = await import('./lib/setup.js');
+    await setupAgents(opts.workflowDir);
+  });
+
 program.parse();
