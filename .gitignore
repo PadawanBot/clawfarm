@@ -5,7 +5,6 @@ node_modules/
 
 # OpenClaw auto-generated agent workspace files
 agents/**/.openclaw/
-agents/**/BOOTSTRAP.md
 agents/**/HEARTBEAT.md
 agents/**/IDENTITY.md
 agents/**/SOUL.md
