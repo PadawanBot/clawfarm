@@ -109,7 +109,7 @@ steps:
     expects: "STATUS: done"
 
   - id: pr
-    agent: developer
+    agent: pr
     model: openrouter/meta-llama/llama-3.3-70b-instruct:free
     timeout: 120
     input: |
