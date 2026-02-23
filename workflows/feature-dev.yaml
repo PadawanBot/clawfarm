@@ -46,7 +46,7 @@ steps:
 
   - id: implement
     agent: developer
-    model: openai-codex/gpt-5.2
+    model: openrouter/openai/gpt-4o-mini
     timeout: 900
     input: |
       You are implementing a software feature.
